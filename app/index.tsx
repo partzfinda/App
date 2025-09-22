@@ -1,88 +1,75 @@
-import React, { useState } from "react";
-import { View, Text, Image, SafeAreaView, StatusBar } from "react-native";
-import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
-import { useColorScheme } from "nativewind";
-import AuthChoice from "../components/auth/AuthChoice";
-import MechanicDashboard from "../components/mechanic/MechanicDashboard";
-import SupplierDashboard from "../components/supplier/SupplierDashboard";
+import React, { useState } from 'react';
 
-// Prevent the splash screen from auto-hiding
-SplashScreen.preventAutoHideAsync();
+const App = () => {
+  const [currentScreen, setCurrentScreen] = useState('request');
+  const [requestText, setRequestText] = useState('');
+  const [requests, setRequests] = useState([]);
 
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "SpaceMono-Regular": require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
-  const { colorScheme } = useColorScheme();
-
-  // Authentication state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userType, setUserType] = useState<"mechanic" | "supplier" | null>(
-    null,
-  );
-
-  // Handle authentication
-  const handleAuthentication = (type: "mechanic" | "supplier") => {
-    setIsAuthenticated(true);
-    setUserType(type);
-  };
-
-  // Handle sign out
-  const handleSignOut = () => {
-    setIsAuthenticated(false);
-    setUserType(null);
-  };
-
-  // Hide splash screen when fonts are loaded
-  React.useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+  // Function to handle moving to the next screen (dashboard)
+  const handleNewRequest = () => {
+    if (requestText.trim()) {
+      const newRequest = {
+        id: `REQ-${Date.now()}`,
+        description: requestText,
+        status: 'Pending',
+        date: new Date().toLocaleDateString(),
+      };
+      setRequests([...requests, newRequest]);
+      setCurrentScreen('dashboard');
+      setRequestText('');
     }
-  }, [fontsLoaded]);
+  };
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'request':
+        return (
+          <div className="flex flex-col h-full justify-end p-4 bg-[#1E1E1E]">
+            <div className="flex-1 flex justify-center items-center">
+              <p className="text-2xl font-bold text-[#E0E0E0]">What part do you need?</p>
+            </div>
+            <div className="flex flex-row items-center mt-4">
+              <input
+                className="flex-1 h-12 bg-[#333333] text-[#E0E0E0] rounded-full px-5 text-base focus:outline-none"
+                placeholder="I need a set of front brake pads for a 2018 Toyota Camry..."
+                value={requestText}
+                onChange={(e) => setRequestText(e.target.value)}
+              />
+              <button onClick={handleNewRequest} className="ml-2 bg-[#007AFF] rounded-full p-4 font-bold text-white">
+                Send
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'dashboard':
+        return (
+          <div className="flex flex-col flex-1 justify-center items-center bg-[#1E1E1E] p-4">
+            <p className="text-xl text-[#E0E0E0]">Dashboard Screen (WIP)</p>
+            {requests.map((request) => (
+              <p key={request.id} className="text-[#E0E0E0] mt-2">{request.description}</p>
+            ))}
+          </div>
+        );
+
+      case 'chat':
+        return (
+          <div className="flex flex-col flex-1 justify-center items-center bg-[#1E1E1E] p-4">
+            <p className="text-xl text-[#E0E0E0]">Chat Screen (WIP)</p>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50 dark:bg-slate-900">
-      <StatusBar
-        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
-      />
-
-      {!isAuthenticated ? (
-        <View className="flex-1 justify-center items-center p-4">
-          <View className="w-full max-w-md">
-            <View className="items-center mb-8">
-              <Image
-                source={require("../assets/images/icon.png")}
-                style={{ width: 120, height: 120 }}
-                className="rounded-xl mb-4"
-              />
-              <Text className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                Partz Finda
-              </Text>
-              <Text className="text-slate-600 dark:text-slate-300 text-center mt-2">
-                Connect mechanics with auto parts suppliers
-              </Text>
-            </View>
-
-            <AuthChoice onAuthenticate={handleAuthentication} />
-          </View>
-        </View>
-      ) : (
-        <>
-          {userType === "mechanic" && (
-            <MechanicDashboard onSignOut={handleSignOut} />
-          )}
-
-          {userType === "supplier" && (
-            <SupplierDashboard onSignOut={handleSignOut} />
-          )}
-        </>
-      )}
-    </SafeAreaView>
+    <div className="h-screen w-screen flex flex-col bg-[#1E1E1E]">
+      <script src="https://cdn.tailwindcss.com"></script>
+      {renderScreen()}
+    </div>
   );
-}
+};
+
+export default App;
