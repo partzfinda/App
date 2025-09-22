@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 
+// Define the shape of a request object for type safety
+interface Request {
+  id: string;
+  description: string;
+  status: string;
+  date: string;
+}
+
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState('request');
   const [requestText, setRequestText] = useState('');
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState<Request[]>([]);
 
   // Function to handle moving to the next screen (dashboard)
   const handleNewRequest = () => {
     if (requestText.trim()) {
-      const newRequest = {
+      const newRequest: Request = {
         id: `REQ-${Date.now()}`,
         description: requestText,
         status: 'Pending',
