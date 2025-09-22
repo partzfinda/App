@@ -1,0 +1,59 @@
+mutation SeedData @auth(level: USER) {
+  user_insertMany(data: [
+    {
+      displayName: "John Doe",
+      email: "john.doe@example.com",
+      firebaseUid: "someFirebaseUid1",
+      userType: "mechanic"
+    },
+    {
+      displayName: "Jane Smith",
+      email: "jane.smith@example.com",
+      firebaseUid: "someFirebaseUid2",
+      userType: "shop"
+    }
+  ])
+  shopProfile_insertMany(data: [
+    {
+      shopName: "Jane's Auto Shop",
+      primaryContactPerson: "Jane Smith",
+      userId_expr: "UUID()" # Placeholder value
+    }
+  ])
+  mechanicProfile_insertMany(data: [
+    {
+      shopName: "John's Mobile Mechanic",
+      businessLicenseNumber: "12345",
+      userId_expr: "UUID()" # Placeholder value
+    }
+  ])
+  partRequest_insertMany(data: [
+    {
+      mechanicId_expr: "UUID()", # Placeholder value
+      partDescription: "Brake Pads",
+      vehicleMake: "Honda",
+      vehicleModel: "Civic",
+      vehicleYear: 2015,
+      createdAt_expr: "request.time"
+    }
+  ])
+  quote_insertMany(data: [
+    {
+      partRequestId_expr: "UUID()", # Placeholder value
+      shopId_expr: "UUID()", # Placeholder value
+      estimatedDeliveryTime: "3 days",
+      price: 75.00,
+      status: "pending",
+      createdAt_expr: "request.time"
+    }
+  ])
+  message_insertMany(data: [
+    {
+      partRequestId_expr: "UUID()", # Placeholder value
+      senderId_expr: "UUID()", # Placeholder value
+      content: "Need brake pads for Honda Civic",
+      createdAt_expr: "request.time",
+      senderUserId_expr: "UUID()" # Placeholder value
+    }
+  ])
+}

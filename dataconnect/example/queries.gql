@@ -1,0 +1,31 @@
+mutation InsertPartRequest($mechanicId: UUID!, $VIN: String, $partDescription: String!, $urgency: String, $vehicleMake: String!, $vehicleModel: String!, $vehicleYear: Int!) @auth(level: USER) {
+  partRequest_insert(data: {mechanicId: $mechanicId, VIN: $VIN, partDescription: $partDescription, urgency: $urgency, vehicleMake: $vehicleMake, vehicleModel: $vehicleModel, vehicleYear: $vehicleYear})
+}
+
+query GetPartRequestsByMechanic($mechanicId: UUID!) @auth(level: USER) {
+  partRequests(where: {mechanicId: {eq: $mechanicId}}) {
+    id
+    VIN
+    createdAt
+    partDescription
+    urgency
+    vehicleMake
+    vehicleModel
+    vehicleYear
+  }
+}
+
+mutation CreateShopProfile($userId: UUID!, $deliveryOptions: [String!], $inventorySpecialties: [String!], $primaryContactPerson: String!, $shopName: String!) @auth(level: USER) {
+  shopProfile_insert(data: {userId: $userId, deliveryOptions: $deliveryOptions, inventorySpecialties: $inventorySpecialties, primaryContactPerson: $primaryContactPerson, shopName: $shopName})
+}
+
+query ListShopProfiles @auth(level: PUBLIC) {
+  shopProfiles {
+    id
+    userId
+    deliveryOptions
+    inventorySpecialties
+    primaryContactPerson
+    shopName
+  }
+}

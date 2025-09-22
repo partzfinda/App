@@ -1,0 +1,52 @@
+type User @table {
+  firebaseUid: String!
+  displayName: String!
+  userType: String!
+  email: String
+  phoneNumber: String
+  address: String
+}
+
+type MechanicProfile @table {
+  user: User!
+  shopName: String!
+  businessLicenseNumber: String
+}
+
+type ShopProfile @table {
+  user: User!
+  shopName: String!
+  primaryContactPerson: String!
+  inventorySpecialties: [String]
+  deliveryOptions: [String]
+}
+
+type PartRequest @table {
+  mechanic: User!
+  partDescription: String!
+  vehicleMake: String!
+  vehicleModel: String!
+  vehicleYear: Int!
+  createdAt: Timestamp!
+  urgency: String
+  VIN: String
+}
+
+type Quote @table {
+  shop: User!
+  partRequest: PartRequest!
+  price: Float!
+  estimatedDeliveryTime: String!
+  createdAt: Timestamp!
+  status: String!
+  availabilityDetails: String
+}
+
+type Message @table {
+  sender: User!
+  partRequest: PartRequest!
+  content: String!
+  createdAt: Timestamp!
+  senderUserId: UUID!
+  associatedQuoteId: UUID
+}
